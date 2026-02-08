@@ -36,7 +36,7 @@ const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
 
-const LOG_DIR = path.join(process.env.HOME, '.claude', 'hooks-logs');
+const LOG_DIR = path.join(process.env.HOME || process.env.USERPROFILE, '.claude', 'hooks-logs');
 const SUPPORTED_TOOLS = new Set(['Edit', 'Write']);
 
 /**
