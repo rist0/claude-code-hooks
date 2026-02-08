@@ -12,6 +12,8 @@
  *   - Enables easy review of modifications before committing
  *   - Maintains audit trail via ~/.claude/hooks-logs/ (daily JSONL format)
  *   - Respects .gitignore rules to protect sensitive files
+ *   - Logs all operations for debugging and audit purposes
+ *   - Gracefully handles errors without disrupting your workflow
  *
  * Installation:
  * Add the following to ~/.claude/settings.json:
