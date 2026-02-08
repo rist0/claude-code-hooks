@@ -49,7 +49,11 @@ function log(data) {
       fs.mkdirSync(LOG_DIR, { recursive: true });
     }
     
-    const date = new Date().toISOString().slice(0, 10);
+    const now = new Date();
+    const day = String(now.getDate()).padStart(2, '0');
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const year = now.getFullYear();
+    const date = `${day}-${month}-${year}`;
     const logFile = path.join(LOG_DIR, `${date}.jsonl`);
     const logEntry = JSON.stringify({
       ts: new Date().toISOString(),
