@@ -30,11 +30,11 @@
  * Note: Automatically skips files outside of git repositories.
  */
 
-import { existsSync, mkdirSync, appendFileSync } from 'fs';
-import { join, dirname, isAbsolute } from 'path';
-import { execSync } from 'child_process';
+const fs = require('fs');
+const path = require('path');
+const { execSync } = require('child_process');
 
-const LOG_DIR = join(process.env.HOME, '.claude', 'hooks-logs');
+const LOG_DIR = path.join(process.env.HOME, '.claude', 'hooks-logs');
 const SUPPORTED_TOOLS = new Set(['Edit', 'Write']);
 
 /**
@@ -43,19 +43,19 @@ const SUPPORTED_TOOLS = new Set(['Edit', 'Write']);
  */
 function log(data) {
   try {
-    if (!existsSync(LOG_DIR)) {
-      mkdirSync(LOG_DIR, { recursive: true });
+    if (!fs.existsSync(LOG_DIR)) {
+      fs.mkdirSync(LOG_DIR, { recursive: true });
     }
     
     const date = new Date().toISOString().slice(0, 10);
-    const logFile = join(LOG_DIR, `${date}.jsonl`);
+    const logFile = path.join(LOG_DIR, `${date}.jsonl`);
     const logEntry = JSON.stringify({
       ts: new Date().toISOString(),
       hook: 'auto-stage',
       ...data
     }) + '\n';
     
-    appendFileSync(logFile, logEntry);
+    fs.appendFileSync(logFile, logEntry);
   } catch (error) {
     // Silent failure to avoid breaking the hook
   }
@@ -68,7 +68,7 @@ function log(data) {
  */
 function isInGitRepo(filePath) {
   try {
-    const dir = dirname(filePath);
+    const dir = path.dirname(filePath);
     execSync('git rev-parse --git-dir', {
       cwd: dir,
       stdio: 'pipe',
@@ -87,7 +87,7 @@ function isInGitRepo(filePath) {
  */
 function stageFile(filePath) {
   try {
-    const dir = dirname(filePath);
+    const dir = path.dirname(filePath);
     execSync(`git add "${filePath}"`, {
       cwd: dir,
       stdio: 'pipe',
@@ -106,10 +106,10 @@ function stageFile(filePath) {
  * @returns {string} Absolute file path
  */
 function resolveFilePath(filePath, basePath) {
-  if (isAbsolute(filePath)) {
+  if (path.isAbsolute(filePath)) {
     return filePath;
   }
-  return join(basePath || process.cwd(), filePath);
+  return path.join(basePath || process.cwd(), filePath);
 }
 
 /**
